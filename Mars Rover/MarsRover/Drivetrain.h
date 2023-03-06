@@ -1,10 +1,10 @@
-#ifndef Chassis_h
-#define Chassis_h
+#ifndef Drivetrain_h
+#define Drivetrain_h
 #include "Arduino.h" 
 
-class Chassis {
+class Drivetrain {
 public:
-    Chassis(int pin_leftDrive, int pin_rightDrive);
+    Drivetrain(int pin_leftDrive, int pin_rightDrive);
     void drive(float leftInput, float rightInput);
     void loop();
 private:
