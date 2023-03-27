@@ -6,7 +6,7 @@ Lighting::Lighting(int pin_testLight) {
 }
 
 void Lighting::loop() {
-  analogWrite(_pin_testLight, _brightness);
+    analogWrite(_pin_testLight, _brightness);
 }
 
 void Lighting::setBrightness(int brightness) {
