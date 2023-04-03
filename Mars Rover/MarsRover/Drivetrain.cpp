@@ -17,7 +17,6 @@ void Drivetrain::drive(float forwardInput, float turnInput) {
 }
 
 void Drivetrain::loop() {
-    //Serial.println("left motor " + String(_leftDrive));
     _leftMotor.setPower(_leftDrive);
     _rightMotor.setPower(_rightDrive);
 }

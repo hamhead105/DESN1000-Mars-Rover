@@ -24,12 +24,10 @@ ControlledMotor::ControlledMotor(int controlPin1, int controlPin2, bool inverted
 void ControlledMotor::setPower(float power) {
     int pwmDutyCycle = (int) abs(round(power * _pwmCoeff));
     if (power * _inversionValue >= 0) {
-        Serial.println(pwmDutyCycle);
         analogWrite(_pin_control1, pwmDutyCycle);
         analogWrite(_pin_control2, 0);
     }
     else {
-        Serial.println(pwmDutyCycle);
         analogWrite(_pin_control1, 0);
         analogWrite(_pin_control2, pwmDutyCycle);
     }
