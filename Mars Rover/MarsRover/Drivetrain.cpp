@@ -2,8 +2,8 @@
 #include "Drivetrain.h"
 
 Drivetrain::Drivetrain(int pin_leftDrive_control1, int pin_leftDrive_control2, int pin_rightDrive_control1, int pin_rightDrive_control2) :
-    _leftMotor(pin_leftDrive_control1, pin_leftDrive_control2), 
-    _rightMotor(pin_rightDrive_control1, pin_rightDrive_control2){
+    _leftMotor(pin_leftDrive_control1, pin_leftDrive_control2, false), 
+    _rightMotor(pin_rightDrive_control1, pin_rightDrive_control2, false){
 }
 
 void Drivetrain::tankDrive(float leftInput, float rightInput) {
