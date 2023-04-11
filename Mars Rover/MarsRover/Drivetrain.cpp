@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include "Drivetrain.h"
 
-Drivetrain::Drivetrain(int pin_leftDrive_control1, int pin_leftDrive_control2, int pin_rightDrive_control1, int pin_rightDrive_control2) :
-    _leftMotor(pin_leftDrive_control1, pin_leftDrive_control2, false), 
-    _rightMotor(pin_rightDrive_control1, pin_rightDrive_control2, false){
+Drivetrain::Drivetrain(int pin_leftDrive_control1, int pin_leftDrive_control2, int pin_leftDrive_speed_control, int pin_rightDrive_control1, int pin_rightDrive_control2, int pin_rightDrive_speed_control) :
+    _leftMotor(pin_leftDrive_control1, pin_leftDrive_control2, pin_leftDrive_speed_control, false), 
+    _rightMotor(pin_rightDrive_control1, pin_rightDrive_control2, pin_rightDrive_speed_control, false){
 }
 
 void Drivetrain::tankDrive(float leftInput, float rightInput) {
