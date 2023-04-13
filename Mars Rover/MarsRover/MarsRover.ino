@@ -1,5 +1,7 @@
 /*
- * Main control code for Mars Rover written by Peter Jung, using USB Host Libraries in order to allow for control with PS4 controller.
+ * MarsRover code by Peter Jung in conjuction with Sonny Pybus. Controls a Mars Rover either autonomously through UWB or through a PS4 Controller with Bluetooth.
+ * 
+ * Control code written using USB Host Libraries in order to allow for control with PS4 controller.
  * Control inputs inspired by PS4BT.ino in examples of USB Host Shield 2.0 https://github.com/felis/USB_Host_Shield_2.0
  * To connect controller, hold down share and PS button at same time once script is running. Ensure controller is reset after each upload / use.
  */
@@ -20,17 +22,9 @@
 #endif
 #include <SPI.h>
 
-USB Usb;
-BTD Btd(&Usb); // You have to create the Bluetooth Dongle instance like so
-PS4BT PS4(&Btd, PAIR);
+bool driverControlMode = false;
 
-bool printAngle, printTouch;
-uint8_t oldL2Value, oldR2Value;
-
-char appData;  
-
-String inData = "";
-
+// Constants
 static int PIN_LEFT_DRIVE_CONTROL_1 = 5;
 static int PIN_LEFT_DRIVE_CONTROL_2 = 6;
 static int PIN_LEFT_DRIVE_SPEED_CONTROL = 7;
@@ -49,21 +43,42 @@ static int PIN_PLUNGER_CONTROL_2 = A2;
 static float PS4_STICK_CONSTANT = 122.5;
 static float PS4_TRIGGER_CONSTANT = 255;
 
+// USB Host Variables
+USB Usb;
+BTD Btd(&Usb); // You have to create the Bluetooth Dongle instance like so
+PS4BT PS4(&Btd, PAIR);
+
+bool printAngle, printTouch;
+uint8_t oldL2Value, oldR2Value;
+
+char appData;  
+
+String inData = "";
+
+// Instantiate Subsystems
 UWB uwb = UWB();
 Drivetrain drivetrain = Drivetrain(PIN_LEFT_DRIVE_CONTROL_1, PIN_LEFT_DRIVE_CONTROL_2, PIN_LEFT_DRIVE_SPEED_CONTROL, PIN_RIGHT_DRIVE_CONTROL_1, PIN_RIGHT_DRIVE_CONTROL_2, PIN_RIGHT_DRIVE_SPEED_CONTROL);
 Intake intake = Intake(PIN_INTAKE_CONTROL_1, PIN_INTAKE_CONTROL_2, PIN_INTAKE_SPEED_CONTROL, PIN_PLUNGER_CONTROL_1, PIN_PLUNGER_CONTROL_2, PIN_PLUNGER_SPEED_CONTROL);
 
+/*
+ * Initialise Rover
+ */
 void setup() {
-  // put your setup code here, to run once:
-  initPS4Controller();
-  //uwb.setup();
+  if (driverControlMode) {
+    initPS4Controller();
+  } else {
+    uwb.setup();
+  }
 }
 
+/*
+ * From USB Host 2.0 PS4BT.ino, initialises PS4 Controller
+ */
 void initPS4Controller() {
    Serial.begin(115200);
-#if !defined(__MIPSEL__)
-  while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
-#endif
+  #if !defined(__MIPSEL__)
+    while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
+  #endif
   if (Usb.Init() == -1) {
     Serial.print(F("\r\nOSC did not start"));
     while (1); // Halt
@@ -71,21 +86,38 @@ void initPS4Controller() {
   Serial.print(F("\r\nPS4 Bluetooth Library Started"));
 }
 
+/*
+ *  Loop, run controls if in control mode, otherwise access odometry from UWB.
+ */
 void loop() {
   Usb.Task();
-  if (PS4.connected() && Usb.Init() == 0) {
+  if (PS4.connected() && Usb.Init() == 0 && driverControlMode) {
     runInputs();
-    drivetrain.loop();
-    intake.loop();
   }
+  else {
+    uwb.computeLocation();
+  }
+  drivetrain.loop();
+  intake.loop();
 }
 
+/*
+ * Called when a message is received from the UWB, i.e. an update on odometry position.
+ */
 void serialEvent() {
   if (Serial.available() > 0) {
     uwb.readSerialEvent(Serial.read());
   }
 }
 
+/*
+ * Run inputs on PS4 Controller using the USB 2.0 Host Shield. 
+ * Left Stick Y Axis -> Driving forward input
+ * Left Stick X Axis -> Driving turn input
+ * Right Stick Y Axis -> Digger claw input
+ * Trigger R2 -> Plunger Out
+ * Trigger L2 -> Draw plunger
+ */
 void runInputs() {
   if (PS4.connected()) {
     if (PS4.getAnalogHat(LeftHatX) > 137 || PS4.getAnalogHat(LeftHatX) < 117 || PS4.getAnalogHat(LeftHatY) > 137 || PS4.getAnalogHat(LeftHatY) < 117) {
