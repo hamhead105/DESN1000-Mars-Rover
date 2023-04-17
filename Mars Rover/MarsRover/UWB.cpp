@@ -88,6 +88,9 @@ void UWB::computeLocation() {
             
             /*Add code here to pass the positioning result to your application*/
             
+            position[0] = Matrix_P[0][0];
+            position[1] = Matrix_P[1][0];
+
             /* USER CODE END  */
             Serial.print("X: ");Serial.print(Matrix_P[0][0]);
             Serial.print(" Y: ");Serial.println(Matrix_P[1][0]);
@@ -178,4 +181,13 @@ void UWB::readSerialEvent(char read) {
       uartBufferCursor=0;
     }
 }
+
+float UWB::getX() {
+    return position[0];
+}
+
+float UWB::getY() {
+    return position[1];
+}
+
 

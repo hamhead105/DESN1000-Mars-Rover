@@ -28,6 +28,8 @@ class UWB {
         void decodePackage();
         void serialEvent();
         void readSerialEvent(char read);
+        float getX();
+        float getY();
     private:
         byte uartBuffer[bufferSize];
         int uartBufferCursor=0;
@@ -35,6 +37,7 @@ class UWB {
         int ObserverdID[MaxObsevationNum];
         float ObservedRange[MaxObsevationNum];
         uint8_t hasNewUWBdata=0;
+        float position[2] = {0,0};
         
         /*******************************************************************************/
         /***Anchors' coordinates will be provided once the test environment is set up   */

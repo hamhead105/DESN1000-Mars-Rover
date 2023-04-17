@@ -60,6 +60,10 @@ UWB uwb = UWB();
 Drivetrain drivetrain = Drivetrain(PIN_LEFT_DRIVE_CONTROL_1, PIN_LEFT_DRIVE_CONTROL_2, PIN_LEFT_DRIVE_SPEED_CONTROL, PIN_RIGHT_DRIVE_CONTROL_1, PIN_RIGHT_DRIVE_CONTROL_2, PIN_RIGHT_DRIVE_SPEED_CONTROL);
 Intake intake = Intake(PIN_INTAKE_CONTROL_1, PIN_INTAKE_CONTROL_2, PIN_INTAKE_SPEED_CONTROL, PIN_PLUNGER_CONTROL_1, PIN_PLUNGER_CONTROL_2, PIN_PLUNGER_SPEED_CONTROL);
 
+// Positional control variables
+float pos_x;
+float pos_y;
+
 /*
  * Initialise Rover
  */
@@ -96,6 +100,9 @@ void loop() {
   }
   else {
     uwb.computeLocation();
+    pos_x = uwb.getX();
+    pos_y = uwb.getY();
+    
   }
   drivetrain.loop();
   intake.loop();
