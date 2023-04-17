@@ -99,13 +99,41 @@ void loop() {
     runInputs();
   }
   else {
-    uwb.computeLocation();
-    pos_x = uwb.getX();
-    pos_y = uwb.getY();
-    
+    runUWBComp();
   }
   drivetrain.loop();
   intake.loop();
+}
+
+/*
+ * run instructions for UWB challenge
+ */
+void runUWBComp() {
+  bool finish = false;
+  bool complete = false;
+  long startTime = millis();
+  long timeout = 1500;
+
+  float targ_x = 1;
+  float targ_y = 0;
+  float tolerance = 0.2;
+
+  while (!finish) {
+      drivetrain.drive(1,0);
+      uwb.computeLocation();
+      pos_x = uwb.getX();
+      pos_y = uwb.getY();
+
+      if (abs(targ_x - pos_x) <= tolerance) {
+        finish = true;
+        complete = true;
+      }
+      if (startTime - millis() > timeout) {
+        finish = true;
+        complete = false;
+      }
+  }
+   drivetrain.drive(0,0);
 }
 
 /*
