@@ -5,7 +5,7 @@
 
 class Intake {
 public:
-    Intake(int pin_leftDrive_control1, int pin_leftDrive_control2, int pin_rightDrive_control1, int pin_rightDrive_control2);
+    Intake(int pin_intake_control1, int pin_intake_control2, int pin_intake_speed, int pin_plunger_control1, int pin_plunger_control2, int pin_plunger_speed);
     void setIntakePower(float power);
     void setPlungerPower(float power);
     float clamp(float input, float min, float max);

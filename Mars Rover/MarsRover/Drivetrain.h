@@ -5,7 +5,7 @@
 
 class Drivetrain {
 public:
-    Drivetrain(int pin_leftDrive_control1, int pin_leftDrive_control2, int pin_rightDrive_control1, int pin_rightDrive_control2);
+    Drivetrain(int pin_leftDrive_control1, int pin_leftDrive_control2, int pin_leftDrive_speed_control, int pin_rightDrive_control1, int pin_rightDrive_control2, int pin_rightDrive_speed_control);
     void tankDrive(float leftInput, float rightInput);
     void drive(float forwardInput, float turnInput);
     void driveTrain(float leftInput, float rightInput);
