@@ -65,8 +65,7 @@ float ControlledMotor::clamp(float input, float min, float max) {
  * @param power a power value of -1 - 1
  */
 void ControlledMotor::setPower(float power) {
-    int pwmDutyCycle = (int) clamp(abs(round(power * _pwmCoeff)), 0, 255);
-    
+    int pwmDutyCycle = (int) clamp(abs(power * _pwmCoeff), 0, 255);
     analogWrite(_pin_controlSpeed, pwmDutyCycle);
     if (power * _inversionValue >= 0) {
         analogWrite(_pin_control1, 255);

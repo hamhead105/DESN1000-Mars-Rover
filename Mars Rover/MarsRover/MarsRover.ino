@@ -22,7 +22,7 @@
 #endif
 #include <SPI.h>
 
-bool driverControlMode = false;
+bool driverControlMode = true;
 
 // Constants
 static int PIN_LEFT_DRIVE_CONTROL_1 = 5;
@@ -40,8 +40,11 @@ static int PIN_PLUNGER_SPEED_CONTROL = A0;
 static int PIN_PLUNGER_CONTROL_1 = A1;
 static int PIN_PLUNGER_CONTROL_2 = A2;
 
-static float PS4_STICK_CONSTANT = 122.5;
+static float PS4_STICK_CONSTANT = 127.5;
 static float PS4_TRIGGER_CONSTANT = 255;
+
+static float STICK_FORWARD_OFFSET = -1;
+static float STICK_RIGHT_OFFSET = -1;
 
 // USB Host Variables
 USB Usb;
@@ -98,7 +101,7 @@ void loop() {
   if (PS4.connected() && Usb.Init() == 0 && driverControlMode) {
     runInputs();
   }
-  else {
+  else if (!driverControlMode) {
     runUWBComp();
   }
   drivetrain.loop();
@@ -155,14 +158,17 @@ void serialEvent() {
  */
 void runInputs() {
   if (PS4.connected()) {
-    if (PS4.getAnalogHat(LeftHatX) > 137 || PS4.getAnalogHat(LeftHatX) < 117 || PS4.getAnalogHat(LeftHatY) > 137 || PS4.getAnalogHat(LeftHatY) < 117) {
-      float forwardDriveValue = (PS4.getAnalogHat(LeftHatY) / PS4_STICK_CONSTANT) - 1;
-      float rightDriveValue = (PS4.getAnalogHat(LeftHatX) / PS4_STICK_CONSTANT) - 1;
-      drivetrain.drive(forwardDriveValue, rightDriveValue);
+    float forwardDriveValue = 0;
+    float rightDriveValue = 0;
+    if (PS4.getAnalogHat(LeftHatX) > 137 || PS4.getAnalogHat(LeftHatX) < 117 ) {
+      rightDriveValue = (PS4.getAnalogHat(LeftHatX) / PS4_STICK_CONSTANT) + STICK_RIGHT_OFFSET;
     }
-    else {
-      drivetrain.drive(0, 0);
+    if (PS4.getAnalogHat(LeftHatY) > 137 || PS4.getAnalogHat(LeftHatY) < 117) {
+      forwardDriveValue = -((PS4.getAnalogHat(LeftHatY) / PS4_STICK_CONSTANT) + STICK_FORWARD_OFFSET);
     }
+    
+    //Serial.println ("drive: forward H: " + String(PS4.getAnalogHat(LeftHatY)) + " right H: " + String(PS4.getAnalogHat(LeftHatX)) + " drive: forward: " + String(forwardDriveValue) + " right: " + String(rightDriveValue));
+    drivetrain.drive(forwardDriveValue, rightDriveValue);
     if (PS4.getAnalogHat(RightHatY) > 137 || PS4.getAnalogHat(RightHatY) < 117) {
       float intakePower = (PS4.getAnalogHat(RightHatY) / PS4_STICK_CONSTANT) - 1;
       intake.setIntakePower(intakePower);
@@ -182,7 +188,7 @@ void runInputs() {
   intake.setPlungerPower(plungerPower);
 
   if (PS4.getAnalogButton(R2) != oldR2Value) { // Only write value if it's different 
-    PS4.setRumbleOn(PS4.getAnalogButton(L2), PS4.getAnalogButton(R2));
+    PS4.setRumbleOn(PS4.getAnalogButton(R2) / 2, PS4.getAnalogButton(R2));
     oldR2Value = PS4.getAnalogButton(R2);
   }
 }

@@ -31,8 +31,8 @@ void Drivetrain::tankDrive(float leftInput, float rightInput) {
  * @param turnInput the power input corresponding to the balance of the left and right motor to make the robot turn.
  */
 void Drivetrain::drive(float forwardInput, float turnInput) {
-    _leftDrive = clamp(forwardInput + turnInput, -1, 1) * _analogConstant;
-    _rightDrive = clamp(forwardInput - turnInput, -1, 1) * _analogConstant;
+    _leftDrive = clamp(forwardInput + turnInput, -1, 1);
+    _rightDrive = clamp(forwardInput - turnInput, -1, 1);
 }
 
 /*
