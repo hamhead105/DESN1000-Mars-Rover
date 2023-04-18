@@ -26,8 +26,8 @@ bool driverControlMode = true;
 
 // Constants
 static int PIN_LEFT_DRIVE_CONTROL_1 = 5;
-static int PIN_LEFT_DRIVE_CONTROL_2 = 6;
-static int PIN_LEFT_DRIVE_SPEED_CONTROL = 7;
+static int PIN_LEFT_DRIVE_CONTROL_2 = 7;
+static int PIN_LEFT_DRIVE_SPEED_CONTROL = 6;
 static int PIN_RIGHT_DRIVE_CONTROL_1 = 2;
 static int PIN_RIGHT_DRIVE_CONTROL_2 = 4;
 static int PIN_RIGHT_DRIVE_SPEED_CONTROL = 3;

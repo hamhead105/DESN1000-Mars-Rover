@@ -39,8 +39,10 @@ void Drivetrain::drive(float forwardInput, float turnInput) {
  * Called every loop cycle, update the power on each motor
  */
 void Drivetrain::loop() {
-    _leftMotor.setPower(_leftDrive);
-    _rightMotor.setPower(_rightDrive);
+    _leftMotor.setPower(_leftDrive * _leftDriveMultiplier);
+    _rightMotor.setPower(_rightDrive * _rightDriveMultiplier);
+
+    Serial.println("drive train power: left: " + String(_leftDrive) + " right: " + String(_rightDrive));
 }
 
 /*

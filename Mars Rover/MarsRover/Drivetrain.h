@@ -15,6 +15,8 @@ private:
     int _analogConstant = 255;
     float _leftDrive;
     float _rightDrive;
+    float _leftDriveMultiplier = 1;
+    float _rightDriveMultiplier = 0.95;
     ControlledMotor _leftMotor;
     ControlledMotor _rightMotor;
 };
